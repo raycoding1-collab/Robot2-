@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+renders/frames/
+renders/preview_frames/
+renders/bench_*.png
+*.blend1
+*.blend2
