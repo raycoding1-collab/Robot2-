@@ -53,6 +53,11 @@ Measured on a **2-vCPU Xeon Platinum 8481C (no GPU)** with Blender `bpy 5.0.1` +
 | `final` | 1920×1080 | 256 (adaptive) | Full GI | `est. 30–40 min/frame` | `~280–370 h` | `~25–40 min` |
 | `cinema4k` | 3840×2160 | 512 (adaptive) | Full GI | — | — | `~2–3 h` |
 
-### Splitting Across Multiple Machines
+### Final Deliverables & Cloud Render Workflow
 
-`render.py` skips completed valid PNGs atomically and accepts `--start`, `--end`, and `--step`, so you can split the 556 frames cleanly across `N` machines (e.g., 4 machines with `--start 1..4 --step 4`) and then encode once all `f0001.png .. f0556.png` are gathered.
+- **Final 1080p Film**: `renders/kairo_cube_1080p.mp4` (`1920×1080`, `24 fps`, `556` frames / `23.167 s`, H.264 High `yuv420p` @ `7.24 Mbps`, muxed with `48 kHz` stereo AAC-LC @ `265 kbps`, EBU R128 `-23.0 LUFS` / `-2.7 dBTP`).
+- **Master Audio**: `renders/foley.wav` (`48 kHz / 24-bit` stereo WAV, `20/20` QA checks passed in `renders/foley_report.txt`).
+- **Blender Scene**: `kairo_cube.blend` (self-contained with all procedural textures packed).
+- **Hero Stills**: 5× `1920×1080` Cycles stills in `renders/stills/hero_1080p_*.png`.
+- **Cloud Rendering**: `.github/workflows/render_1080p.yml` splits all 556 frames across 20 parallel cloud shards, verifies every PNG, muxes `renders/foley.wav`, and publishes `renders/kairo_cube_1080p.mp4`. `render.py` also skips completed valid PNGs atomically and accepts `--start`, `--end`, and `--step` for manual multi-machine rendering.
+

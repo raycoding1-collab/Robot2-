@@ -23,10 +23,13 @@
 - [x] **Stage 2 (Physics, Finger Tricks & Automated Penetration Verification)**:
   - RK2 magnetic detent flicks (`3.03°` overshoot), minimum-jerk wrist turns, 3-axis compliant grip recoil, resource-scheduler slice clearing, 9.90 s 6-face inspection, `7.08 TPS` speedsolve.
   - `kairo/verify_motion.py`: **PASS** across all `556/556` frames (`0.172 mm` max finger–cube penetration vs `0.50 mm` limit, `0.000 mm` hand–desk penetration, `0` unreachable arm IK frames).
-- [x] **Stage 3 & 4 (Original KAIRO-04 Robot, Sunlit Lab & 4× 1080p Hero Stills)**:
-  - Iterated look-dev across 3 visual passes addressing every detail (stickerless speedcube shells, sculpted tapered phalanges with clevis pins & silicone grip pads, ergonomic chest carapace + crisp `KAIRO-04` titanium badge, flush helmet + wide dark visor reflecting cube/windows with 100% opaque bulkhead, anchored cables, oiled American walnut desk, ESD metric mat, glowing oscilloscope & PSU rack, warm practical lamp, golden afternoon sun through mullioned windows).
-  - Rendered 4 full **1920×1080** hero stills (`renders/stills/hero_1080p_*.png`) + 4 look-dev stills.
+- [x] **Stage 3 & 4 (Original KAIRO-04 Robot, Sunlit Lab & 5× 1080p Hero Stills)**:
+  - Iterated look-dev across 4 visual passes addressing every detail (stickerless speedcube shells, sculpted tapered phalanges with clevis pins & silicone grip pads, ergonomic chest carapace + crisp `KAIRO-04` titanium badge, flush helmet + single-surface dark smoked obsidian visor with centered glowing iris LEDs over 100% opaque bulkhead, anchored cables, oiled American walnut desk, ESD metric mat, glowing oscilloscope & PSU rack, warm practical lamp, golden afternoon sun through mullioned windows).
+  - Rendered 5 full **1920×1080** hero stills (`renders/stills/hero_1080p_*.png`) across all key beats.
 - [x] **Stage 5 (Physics-Driven Sound & 20-Check Audio QA)**:
-  - `renders/foley.wav` (`48 kHz / 24-bit` stereo, `23.16667 s`), **20/20 checks PASS** (`renders/foley_report.txt`), `-23.00 LUFS` confirmed independently with `ffmpeg ebur128`, `-2.70 dBTP`, `29/29` clicks within `0.33 ms` max error vs physics, `0` stray onsets, `2.4 dB` max tonal prominence.
-- [ ] **Stage 6 (Full 556-Frame Sequence Render & Final MP4 Mux)**:
-  - Resumable `render.py`, `tools/render_watchdog.py`, and `ffmpeg`/`ffprobe` H.264 muxer ready; awaiting user choice of render option (GPU host, multi-machine split, or CPU preset) before starting multi-hour full sequence render.
+  - `renders/foley.wav` (`48 kHz / 24-bit` stereo, `23.16667 s`), **20/20 checks PASS** (`renders/foley_report.txt`), `-23.00 LUFS` confirmed independently with `ffmpeg ebur128`, `-2.68 dBTP`, `29/29` clicks within `0.33 ms` max error vs physics, `0` stray onsets, `2.4 dB` max tonal prominence.
+- [x] **Stage 6 (Cloud 1080p Full 556-Frame Sequence Render & Final Verified MP4)**:
+  - Rendered all `556/556` frames at `1920×1080` (`hd_preview`, 32 adaptive samples + OpenImageDenoise + AgX) across 20 parallel GitHub Actions cloud shards (`.github/workflows/render_1080p.yml`, run `44905823768`, `20/20` shards + `assemble_mp4` succeeded).
+  - Deliverable: `renders/kairo_cube_1080p.mp4` (`21.8 MB`, `1920×1080` H.264 High `yuv420p`, `24 fps`, `556` frames, `23.167 s`, `7.24 Mbps` video + `48 kHz` stereo AAC-LC `265 kbps` audio).
+  - Independently verified via `ffprobe`, `ffmpeg ebur128` (`-23.0 LUFS`, `-2.7 dBTP`), and 6-point visual frame extraction across the timeline (`1.5s`, `6.0s`, `10.5s`, `14.4s`, `18.75s`, `22.2s`).
+
