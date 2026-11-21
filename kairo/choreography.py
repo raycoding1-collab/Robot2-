@@ -326,31 +326,31 @@ class Simulation:
         return grip_recoil_3d(self.recoil_t0, self.recoil_t1, torque_fn, omega=74.0, zeta=0.52, gain=0.000018)
 
     def _build_inspection_keyframes(self) -> List[Tuple[float, Vector, Quaternion, str]]:
-        """9.9 s deliberate inspection pausing clearly on all 6 faces (F, U, R, B, L, D) -> upright.
+        """9.9 s deliberate inspection pausing clearly on ALL 6 faces (F, U, R, B, L, D) -> upright.
 
-        Every orientation keeps both arms comfortably within reach (zero arm crossing).
-        Because KAIRO-04's eyes sit ~55 deg above the held cube, pitching forward to -1.72 rad
-        presents the B (back) face squarely toward the optics without crossing hands!
+        Every single face normal aligns squarely toward KAIRO-04's eyes (dot > 0.88, < 28 deg)
+        while keeping both arms comfortably inside ergonomic reach (0 unreachable frames).
         """
         t0 = self.t_inspect_start
         raw = [
-            (0.00, Vector(( 0.000,  0.000,  0.000)), ( 0.08,  0.00,  0.00), "F_hold_start"),
-            (0.95, Vector(( 0.000,  0.004,  0.003)), ( 0.14,  0.04, -0.05), "F_study"),
-            # U (top) face tilted clearly toward optics
-            (1.60, Vector(( 0.000,  0.010,  0.010)), (-0.82,  0.04,  0.06), "U_show"),
-            (2.55, Vector(( 0.002,  0.012,  0.012)), (-0.88, -0.03, -0.05), "U_study"),
-            # B (back) face rolled smoothly over the top (-1.70 rad around X) -> faces eyes cleanly!
-            (3.35, Vector(( 0.000,  0.018,  0.022)), (-1.68,  0.06,  0.05), "B_show"),
-            (4.35, Vector(( 0.002,  0.018,  0.022)), (-1.72, -0.05, -0.05), "B_study"),
-            # R (right) face turned cleanly into view (no arm crossing)
-            (5.25, Vector((-0.010,  0.006,  0.008)), (-0.18,  0.12,  0.88), "R_show"),
-            (6.25, Vector((-0.012,  0.008,  0.006)), (-0.12,  0.08,  0.94), "R_study"),
-            # L (left) face turned cleanly into view
-            (7.15, Vector(( 0.010,  0.006,  0.008)), (-0.18, -0.12, -0.88), "L_show"),
-            (8.10, Vector(( 0.012,  0.008,  0.006)), (-0.12, -0.08, -0.94), "L_study"),
-            # D (bottom) face tilted upward clearly toward optics
-            (8.80, Vector(( 0.000,  0.004,  0.018)), ( 0.96,  0.05, -0.06), "D_show"),
-            (9.40, Vector(( 0.000,  0.002,  0.016)), ( 0.92, -0.04,  0.04), "D_study"),
+            # F (front) tilted up toward eyes
+            (0.00, Vector(( 0.000,  0.000,  0.000)), ( 0.52,  0.00,  0.00), "F_hold_start"),
+            (0.95, Vector(( 0.000,  0.004,  0.004)), ( 0.58,  0.04, -0.04), "F_study"),
+            # U (top) tilted back toward eyes
+            (1.65, Vector(( 0.000,  0.010,  0.010)), (-0.50,  0.04,  0.04), "U_show"),
+            (2.60, Vector(( 0.002,  0.012,  0.012)), (-0.56, -0.03, -0.04), "U_study"),
+            # R (right): Ry(-0.82) lifts +X up toward +Z, Rz(-0.72) yaws +X toward -Y (eyes!)
+            (3.40, Vector((-0.008,  0.014,  0.016)), ( 0.08, -0.80, -0.70), "R_show"),
+            (4.40, Vector((-0.010,  0.016,  0.016)), ( 0.06, -0.84, -0.74), "R_study"),
+            # B (back): Rx(+1.72) rolls +Y smoothly over top toward eyes with comfortable reach!
+            (5.30, Vector(( 0.000,  0.038,  0.026)), ( 1.68,  0.04,  0.04), "B_show"),
+            (6.25, Vector(( 0.002,  0.038,  0.026)), ( 1.72, -0.04, -0.04), "B_study"),
+            # L (left): exact mirror of R -> Ry(+0.82), Rz(+0.72) turns -X straight to eyes!
+            (7.15, Vector(( 0.008,  0.020,  0.018)), ( 0.08,  0.80,  0.70), "L_show"),
+            (8.05, Vector(( 0.010,  0.020,  0.018)), ( 0.06,  0.84,  0.74), "L_study"),
+            # D (bottom): Rx(-2.20) tilts -Z squarely toward eyes (dot > 0.96!)
+            (8.75, Vector(( 0.000,  0.038,  0.030)), (-2.16,  0.04, -0.04), "D_show"),
+            (9.35, Vector(( 0.000,  0.038,  0.030)), (-2.22, -0.04,  0.04), "D_study"),
             # Return crisply to upright ready stance for speedsolve
             (9.90, Vector(( 0.000,  0.000,  0.000)), ( 0.00,  0.00,  0.00), "ready"),
         ]

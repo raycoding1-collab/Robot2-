@@ -71,7 +71,7 @@ def bake_animation(sim: Simulation, rig: dict, cube_root, cubies: List[bpy.types
 
         ex, ez = st["eye_shift"]
         for eye_o, sx in zip(rig["eyes"], (-1.0, 1.0)):
-            eye_o.location = (sx * 0.0265 + ex, -0.0915, 0.112 + ez)
+            eye_o.location = (sx * 0.0270 + ex, -0.0920, 0.126 + ez)
             eye_o.keyframe_insert("location", frame=fr)
 
         # Arms & fingers

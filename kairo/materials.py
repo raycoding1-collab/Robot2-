@@ -330,12 +330,16 @@ def _make_silicone_mat(name: str = "KAIRO_Silicone"):
 
 
 def _make_visor_mat(name: str = "KAIRO_VisorGlass"):
-    """Dark smoked optical polycarbonate visor with faint fingerprint smudges & high-gloss reflection."""
+    """Dark smoked optical polycarbonate visor with faint fingerprint smudges & high-gloss reflection.
+
+    Backed 3.5 mm behind by 100% opaque pitch-black optical bulkhead so the visor reads deep
+    glossy obsidian while allowing the subtle articulated eye iris rings to shine cleanly through!
+    """
     mat, nt, bsdf = _new_mat(name)
     tc = _tex_coord(nt)
-    bsdf.inputs["Base Color"].default_value = (0.012, 0.014, 0.018, 1.0)
+    bsdf.inputs["Base Color"].default_value = (0.09, 0.10, 0.12, 1.0)
     bsdf.inputs["IOR"].default_value = 1.54
-    bsdf.inputs["Transmission Weight"].default_value = 0.48
+    bsdf.inputs["Transmission Weight"].default_value = 0.72
     bsdf.inputs["Coat Weight"].default_value = 1.0
     bsdf.inputs["Coat IOR"].default_value = 1.56
 

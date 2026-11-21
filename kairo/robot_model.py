@@ -316,8 +316,6 @@ def _build_head_and_visor(head_empty, mats, coll):
                     verts_grid[iv + 1][iu],
                 ))
         bmesh.ops.recalc_face_normals(bm_v, faces=bm_v.faces)
-        if scale_r >= 0.99:
-            bmesh.ops.solidify(bm_v, geom=list(bm_v.faces), thickness=0.0020)
         return bm_v
 
     bulkhead_bm = _visor_dome_bm(scale_r=0.945, y_shift=0.0040)
@@ -326,14 +324,14 @@ def _build_head_and_visor(head_empty, mats, coll):
     visor_bm = _visor_dome_bm(scale_r=1.0, y_shift=0.0)
     geo.new_mesh_obj("KAIRO_VisorGlass", visor_bm, mats=[mats["visor_glass"]], parent=head_empty, coll=coll)
 
-    # 3. Subtle articulated dual-ring optical iris LEDs seated cleanly between bulkhead & smoked visor
+    # 3. Subtle articulated dual-ring optical iris LEDs centered cleanly at mid-visor height
     eye_objs = []
     for side, sx in (("R", -1.0), ("L", 1.0)):
         eye_e = _make_empty(
             f"KAIRO_Eye_{side}",
             parent=head_empty,
             coll=coll,
-            loc=(sx * 0.0265, -0.0915, 0.112),
+            loc=(sx * 0.0270, -0.0920, 0.126),
             size=0.012,
         )
         bm_eye = bmesh.new()

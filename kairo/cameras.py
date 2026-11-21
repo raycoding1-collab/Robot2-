@@ -96,10 +96,10 @@ def build_shot_list(sim: Simulation) -> List[ShotSpec]:
             name="Cam_05_MidSolveDynamic",
             t_start=t_mid_solve,
             t_end=t_end_solve,
-            lens_mm=54.0,
+            lens_mm=48.0,
             fstop=2.4,
-            pos_start=Vector((-0.44, -1.04, 0.96)),
-            pos_end=Vector((-0.38, -0.99, 0.99)),
+            pos_start=Vector((-0.46, -1.04, 0.96)),
+            pos_end=Vector((-0.40, -0.99, 0.98)),
             target_mode="cube_torso",
             drift_amp=0.0020,
         ),
@@ -158,7 +158,7 @@ def evaluate_camera_at(shot: ShotSpec, sim: Simulation, t: float, seed: float) -
         aim = cube_p + Vector((0.0, 0.0, -0.004))
         focus_p = cube_p
     elif shot.target_mode == "cube_torso":
-        aim = cube_p.lerp(head_p, 0.34)
+        aim = cube_p.lerp(head_p, 0.16)
         focus_p = cube_p
     elif shot.target_mode == "finale_rack":
         aim = cube_p.lerp(head_p, 0.54) + Vector((0.0, 0.0, 0.04))

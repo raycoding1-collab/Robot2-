@@ -1,10 +1,10 @@
 {
-  "gain_lin": 0.7067148206730083,
-  "click_peak_dbfs": -1.13,
-  "slide_rms_dbfs": -36.29,
-  "tap_peak_dbfs": -19.24,
-  "servo_rms_dbfs": -52.57,
-  "room_rms_dbfs": -60.72,
+  "gain_lin": 0.7079838988145969,
+  "click_peak_dbfs": -1.12,
+  "slide_rms_dbfs": -36.28,
+  "tap_peak_dbfs": -19.22,
+  "servo_rms_dbfs": -52.3,
+  "room_rms_dbfs": -60.71,
   "lufs": -23.0,
-  "true_peak_dbtp": -2.699
+  "true_peak_dbtp": -2.678
 }
