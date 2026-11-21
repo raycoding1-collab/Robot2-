@@ -1,0 +1,123 @@
+name: Cloud Render 1080p MP4 (20x Parallel Shards)
+
+on:
+  workflow_dispatch:
+    inputs:
+      preset:
+        description: "Cycles preset (hd_preview=1080p 32s ~50m, hero=1080p 128s ~3h)"
+        required: false
+        default: "hd_preview"
+        type: choice
+        options:
+          - hd_preview
+          - hero
+          - final
+
+permissions:
+  contents: write
+
+jobs:
+  render_shards:
+    name: Render Shard ${{ matrix.shard }}/20 (1080p)
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+
+    steps:
+      - name: Checkout Robot2-
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install bpy & dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install bpy==5.0.1 pillow numpy scipy kociemba
+
+      - name: Render shard frames (28 frames @ 1920x1080)
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          PRESET="${{ inputs.preset || 'hd_preview' }}"
+          START=$(( ${{ matrix.shard }} + 1 ))
+          echo "Rendering preset=$PRESET start=$START step=20 end=556"
+          python render.py \
+            --blend kairo_cube.blend \
+            --preset "$PRESET" \
+            --anim \
+            --start "$START" \
+            --end 556 \
+            --step 20 \
+            --frames-dir renders/frames
+
+      - name: Upload shard PNG frames
+        uses: actions/upload-artifact@v4
+        with:
+          name: frames-shard-${{ matrix.shard }}
+          path: renders/frames/f*.png
+          retention-days: 3
+
+  assemble_mp4:
+    name: Verify 556 PNGs, Mux EBU R128 Audio & Publish 1080p MP4
+    needs: render_shards
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Robot2-
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11 & ffmpeg
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python deps & ffmpeg
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install pillow
+
+      - name: Download all 20 frame shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: frames-shard-*
+          path: renders/frames
+          merge-multiple: true
+
+      - name: Verify all 556 PNGs & encode 1080p H.264 MP4 + mux foley.wav
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          ls renders/frames/f*.png | wc -l
+          python render.py \
+            --encode \
+            --frames-dir renders/frames \
+            --audio renders/foley.wav \
+            --mp4 renders/kairo_cube_1080p.mp4 \
+            --total-frames 556 \
+            --crf 16
+          ls -lh renders/kairo_cube_1080p.mp4
+
+      - name: Upload final 1080p MP4 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kairo-cube-1080p-mp4
+          path: |
+            renders/kairo_cube_1080p.mp4
+            renders/foley.wav
+          retention-days: 30
+
+      - name: Commit & push renders/kairo_cube_1080p.mp4 to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
+          git add renders/kairo_cube_1080p.mp4
+          git commit -m "Add final cloud-rendered 1920x1080 24fps H.264 MP4 with muxed EBU R128 foley" || true
+          git push origin main

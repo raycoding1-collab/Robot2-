@@ -15,11 +15,7 @@ import subprocess
 import time
 from pathlib import Path
 
-import bpy
 from PIL import Image
-
-import kairo  # noqa: F401
-from kairo import render_setup
 
 
 HERO_STILLS = [
@@ -43,6 +39,8 @@ def is_valid_png(path: Path) -> bool:
 
 def render_single_frame(frame: int, out_path: Path, skip_existing: bool = True) -> float:
     """Render one frame atomically (write to .tmp.png then rename so no partial PNGs remain)."""
+    import bpy
+
     out_path.parent.mkdir(parents=True, exist_ok=True)
     if skip_existing and is_valid_png(out_path):
         return 0.0
@@ -130,7 +128,7 @@ def encode_mp4(frames_dir: Path, mp4_path: Path, audio_wav: Path | None = None, 
 def main():
     ap = argparse.ArgumentParser(description="KAIRO-04 Cycles Renderer & Encoder")
     ap.add_argument("--blend", default="kairo_cube.blend")
-    ap.add_argument("--preset", default="final", choices=list(render_setup.PRESETS.keys()))
+    ap.add_argument("--preset", default="final")
     ap.add_argument("--gpu", action="store_true")
     ap.add_argument("--stills", action="store_true", help="Render the 4 key hero look-dev stills")
     ap.add_argument("--bench", action="store_true", help="Benchmark a single target frame and estimate total time")
@@ -145,13 +143,19 @@ def main():
     ap.add_argument("--audio", default="renders/foley.wav")
     ap.add_argument("--mp4", default="renders/kairo_cube.mp4")
     ap.add_argument("--crf", type=int, default=16)
+    ap.add_argument("--total-frames", type=int, default=0)
     ap.add_argument("--overwrite", action="store_true")
     args = ap.parse_args()
 
     if args.encode:
         wav = Path(args.audio) if args.audio else None
-        encode_mp4(Path(args.frames_dir), Path(args.mp4), audio_wav=wav, crf=args.crf)
+        tf = args.total_frames if args.total_frames > 0 else None
+        encode_mp4(Path(args.frames_dir), Path(args.mp4), audio_wav=wav, total_frames=tf, crf=args.crf)
         return
+
+    import bpy
+    import kairo  # noqa: F401
+    from kairo import render_setup
 
     blend_path = Path(args.blend).resolve()
     bpy.ops.wm.open_mainfile(filepath=str(blend_path))
